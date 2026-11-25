@@ -71,11 +71,22 @@ LINE = (
 )
 
 
+def candidate_paths():
+    """Yield the entry paths to try, best first.
+
+    The grader runs the program in a sandbox where /output is the artifact
+    directory; a local run has no /output, so fall back to a relative
+    output/ directory next to the working directory.
+    """
+    yield "/output/entry.txt"
+    yield "output/entry.txt"
+
+
 def main():
     # The gate: 1 to 200 characters, not only white space, UTF-8 plain text.
     assert 1 <= len(LINE) <= 200, f"line is {len(LINE)} chars, must be 1-200"
     assert LINE.strip(), "line must not be only white space"
-    for path in ("/output/entry.txt", "output/entry.txt"):
+    for path in candidate_paths():
         try:
             os.makedirs(os.path.dirname(path), exist_ok=True)
             with open(path, "w", encoding="utf-8") as f:
